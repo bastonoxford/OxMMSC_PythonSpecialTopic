@@ -4,6 +4,7 @@ A Class hierarchy defining six Numerical Methods for the Cahn-Hilliard PDE.
 Anthony Baston - Oxford - June 2021
 """
 import numpy as np
+import scipy.sparse as sparse
 from math import pi, cos
 
 
@@ -56,7 +57,7 @@ def newton(f, df, c0, w0, tol, max_iter):
 
 def laplacian1D(n, h):
     """Construct a second order finite difference Laplacian operator,\
-       associated with Neumann boundary conditions.
+       associated with Neumann boundary conditions, in 1D.
 
     Parameters
     ----------
@@ -67,7 +68,7 @@ def laplacian1D(n, h):
 
     Returns
     ----------
-    np.array
+    M : np.array
         The discretised Laplacian operator, of shape (N+1, N+1)
     """
     M = np.diag(-2*np.ones(n+1)) + np.diag(np.ones(n), 1) \
@@ -78,8 +79,29 @@ def laplacian1D(n, h):
     return M
 
 
-def initialise(omega_domain, laplacian, epsilson, switch):
-    """Set initial conditions to be either smooth or random
+def laplacian2D(n, h):
+    """Construct a second order finite difference Laplacian operator,\
+    associated with Neumann boundary conditions, in 2D.
+
+    Parameters
+    ----------
+    n : int
+        The total number of for the discretised mesh.
+    h : float
+        The size of the mesh
+
+    Returns
+    ----------
+    M : np.array
+        The discretised Laplacian operator, of shape (N+1, N+1)
+    """
+    m = laplacian1D(n, h)
+    M = np.kron(np.identity(n+1), m) + np.kron(m, np.identity(n+1))
+    return M
+
+
+def initialise1D(omega_domain, laplacian, epsilon, switch):
+    """Set initial conditions to be either smooth or random in 1D
 
     Parameters
     ----------
@@ -101,15 +123,50 @@ def initialise(omega_domain, laplacian, epsilson, switch):
     """
     if switch == 0:
         c0 = np.transpose(np.array([cos(pi*x) for x in omega_domain]))
-        w0 = 1/epsilson*(np.power(c0, 3) - c0) + epsilson*pi**2*c0
+        w0 = 1/epsilon*(np.power(c0, 3) - c0) + epsilon*pi**2*c0
         return c0, w0
     elif switch == 1:
         c0 = np.transpose(np.random.normal(0, 1, len(omega_domain)))
-        w0 = 1/epsilson*(np.power(c0, 3) - c0) + epsilson*laplacian@c0
+        w0 = 1/epsilon*(np.power(c0, 3) - c0) + epsilon*laplacian@c0
         return c0, w0
     else:
         raise NotImplementedError(f"You must set the switch = 0 or 1,\
                                   not {switch}")
+
+
+def initialise2D(omega_domain, laplacian, epsilon, switch):
+    """Set initial conditions to be either smooth or random in 2D
+
+    Parameters
+    ----------
+    omega_domain : np.array
+        The domain on which the Cahn-Hilliard equation is to be solved.
+    laplacian : np.array
+        The Laplacian operator from laplacian1D, to be used to construct
+        the w0 initial conditions
+    epsilon : float
+        The PDE epsilon parameter.
+    switch : int
+        Either 0 or 1. An input of 0 returns smooth initial data, an input
+        of 1 returns random initial data
+
+    Returns
+    ----------
+    tuple(np.array, np.array)
+        The c0 and w0 initial data respectively.
+    """
+    xx, yy = omega_domain
+    if switch == 0:
+        c_grid = np.cos(pi*xx)*np.cos(pi*yy)
+        c0 = np.transpose(np.reshape(c_grid, c_grid.size))
+    elif switch == 1:
+        c_grid = np.transpose(np.random.normal(0, 1, omega_domain.size))
+    else:
+        raise NotImplementedError(f"You must set the switch = 0 or 1,\
+                                  not {switch}")
+    w0 = 1/epsilon*(np.power(c0, 3) - c0) + epsilon*laplacian@c0
+
+    return c0, w0
 
 
 class NumericalMethod:
@@ -194,8 +251,9 @@ class Implicit(NumericalMethod):
             A block matrix representation of the Jacobian.
         """
         eye = np.identity(c.size)
-        return np.block([[eye, -self.timestep*self.laplacian],
-                         [1/self.epsilon*(-3*np.diag(np.power(c, 2)) + eye) + self.epsilon*self.laplacian, eye]]) # noqa E501
+        jacobian = np.block([[eye, -self.timestep*self.laplacian],
+                              [1/self.epsilon*(-3*np.diag(np.power(c, 2)) + eye) + self.epsilon*self.laplacian, eye]]) # noqa E501
+        return sparse.csr_matrix(jacobian)
 
     def implicit_function(self, c, c_next, w_next):
         """Function associated with the implicit method.

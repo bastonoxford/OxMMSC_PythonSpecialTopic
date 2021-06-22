@@ -40,7 +40,7 @@ c_evol: np.array
 import numpy as np
 import matplotlib.pyplot as plt
 from numerical_methods import laplacian1D, Explicit, Implicit, \
-                              ImexA, ImexB, ImexC, ImexD, initialise
+                              ImexA, ImexB, ImexC, ImexD, initialise1D
 from math import ceil
 from get_quantities import get_mass1D, get_energy1D
 
@@ -71,7 +71,7 @@ methods = [Explicit(dt_ee, eps, Lp), Implicit(dt_im, eps, Lp, TOL, max_its),
 
 # Setup initial conditions - switch=0 for smooth initial conditions,
 #                            switch=1 for random initial conditions.
-(c0, w0) = initialise(omega_domain=x_domain, laplacian=Lp, epsilson=eps, switch=initial) # noqa E501
+(c0, w0) = initialise1D(omega_domain=x_domain, laplacian=Lp, epsilon=eps, switch=initial) # noqa E501
 
 
 # Check choice input.
