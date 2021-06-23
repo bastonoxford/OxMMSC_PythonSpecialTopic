@@ -1,10 +1,9 @@
 "Import tests."
-from . import numericalMethods
 
 
 def test_numerical_import():
     "Ensure that we can import the numerical methods."
-    from numericalMethods.numerical_methods2 import NumericalMethod, Explicit, \
+    from  numericalMethods.numerical_methods2 import NumericalMethod, Explicit, \
                                                     Implicit, ImexA, ImexB, \
                                                     ImexC, ImexD # noqa F401
 
