@@ -130,7 +130,7 @@ def initialise1D(omega_domain, laplacian, epsilon, switch):
         c0 = np.transpose(np.array([cos(pi*x) for x in omega_domain]))
         w0 = 1/epsilon*(np.power(c0, 3) - c0) + epsilon*pi**2*c0
         name = "smooth"
-        return c0, w0
+        return c0, w0, name
     elif switch == 1:
         c0 = np.transpose(np.random.normal(0, 0.25, len(omega_domain)))
         w0 = 1/epsilon*(np.power(c0, 3) - c0) + epsilon*laplacian@c0
