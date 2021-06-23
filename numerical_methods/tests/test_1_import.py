@@ -20,3 +20,8 @@ def test_get_quantities_import():
     from numerical_methods.get_quantities import potential_phi, get_mass1D,\
                                                  get_mass2D, get_energy1D, \
                                                  get_energy2D # noqa F401
+
+
+test_numerical_import()
+test_additional_numerical_import()
+test_get_quantities_import()
