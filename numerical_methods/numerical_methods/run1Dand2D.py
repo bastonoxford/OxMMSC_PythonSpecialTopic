@@ -1,4 +1,4 @@
-"""This script illustrates the working of the numerical methods in 1D.
+"""This script illustrates the working of the numerical methods in 1D and 2D.
 
 Anthony Baston - Oxford - June -2021.
 
@@ -167,7 +167,7 @@ else:
     xx, yy = omega
     for j in j_values:
         j_ = ceil(J/10)*j
-        c_grid = np.reshape(c_evol[:, j_-1], (int(sqrt(sz[0])), int(sqrt(sz[0]))))
+        c_grid = np.reshape(c_evol[:, j_-1], (int(sqrt(sz[0])), int(sqrt(sz[0])))) # noqa E501
         fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
         ax.plot_surface(xx, yy, c_grid, cmap=cm.coolwarm,
                         linewidth=0, antialiased=False)

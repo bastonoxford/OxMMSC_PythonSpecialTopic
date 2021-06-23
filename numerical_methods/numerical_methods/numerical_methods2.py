@@ -100,7 +100,8 @@ def laplacian2D(n, h):
         The discretised Laplacian operator, in sparse form.
     """
     m = laplacian1D(n, h)
-    M = sparse.kron(sparse.identity(n+1), m) + sparse.kron(m, sparse.identity(n+1))
+    M = sparse.kron(sparse.identity(n+1), m) \
+        + sparse.kron(m, sparse.identity(n+1))
     return M
 
 

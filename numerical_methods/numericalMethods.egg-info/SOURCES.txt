@@ -1,0 +1,13 @@
+setup.py
+numericalMethods.egg-info/PKG-INFO
+numericalMethods.egg-info/SOURCES.txt
+numericalMethods.egg-info/dependency_links.txt
+numericalMethods.egg-info/requires.txt
+numericalMethods.egg-info/top_level.txt
+numerical_methods/__init__.py
+numerical_methods/get_quantities.py
+numerical_methods/numerical_methods.py
+numerical_methods/numerical_methods2.py
+numerical_methods/run1D.py
+numerical_methods/testing_script.py
+numerical_methods/testing_script2.py
