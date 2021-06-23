@@ -4,7 +4,6 @@ A Class hierarchy defining six Numerical Methods for the Cahn-Hilliard PDE.
 Anthony Baston - Oxford - June 2021
 """
 import numpy as np
-import scipy.sparse as sparse
 from math import pi, cos
 
 
@@ -253,7 +252,7 @@ class Implicit(NumericalMethod):
         eye = np.identity(c.size)
         jacobian = np.block([[eye, -self.timestep*self.laplacian],
                               [1/self.epsilon*(-3*np.diag(np.power(c, 2)) + eye) + self.epsilon*self.laplacian, eye]]) # noqa E501
-        return sparse.csr_matrix(jacobian)
+        return jacobian
 
     def implicit_function(self, c, c_next, w_next):
         """Function associated with the implicit method.
@@ -332,8 +331,9 @@ class ImexA(NumericalMethod):
             A block matrix representation of the Jacobian.
         """
         eye = np.identity(c.size)
-        return np.block([[eye, -self.timestep*self.laplacian],
-                         [-3/self.epsilon*np.diag(np.power(c, 2))+self.epsilon*self.laplacian, eye]]) # noqa E501
+        jacobian = np.block([[eye, -self.timestep*self.laplacian],
+                             [-3/self.epsilon*np.diag(np.power(c, 2))+self.epsilon*self.laplacian, eye]]) # noqa E501
+        return jacobian
 
     def implicit_function(self, c, c_next, w_next):
         """Function associated with the ImexA method.

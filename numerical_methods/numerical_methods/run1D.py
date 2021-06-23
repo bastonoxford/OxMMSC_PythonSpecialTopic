@@ -39,7 +39,8 @@ c_evol: np.array
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from numerical_methods import laplacian1D, Explicit, Implicit, \
+import time
+from numerical_methods2 import laplacian1D, Explicit, Implicit, \
                               ImexA, ImexB, ImexC, ImexD, initialise1D
 from math import ceil
 from get_quantities import get_mass1D, get_energy1D
@@ -92,6 +93,9 @@ else:
                                 of type {type(choice)}")
 
 # Solve the equation.
+print(f"Solving with the {method.name} scheme.")
+time.sleep(5)
+
 c_evol = np.zeros((N+1, J))
 w_evol = np.zeros((N+1, J))
 c = c0
@@ -99,6 +103,7 @@ w = w0
 c_evol[:, 0] = c0
 w_evol[:, 0] = w0
 for i in range(1, J):
+    print(f"Percentage complete: {ceil(i/J*1000)/10}")
     out = method(c, w)
     c = out[0]
     w = out[1]

@@ -41,7 +41,7 @@ w = w0
 
 for i in range(1, J):
     print(f"Percentage complete: {i/J*100}")
-    out = implicit(c, w)
+    out = imexB(c, w)
     c = out[0]
     w = out[1]
     c_evol[:, i] = c
