@@ -5,5 +5,5 @@ setup(
     name="numerical_methods",
     version="0.1",
     packages=find_packages(),
-    install_requires=['numpy', 'matplotlib']
+    install_requires=['numpy', 'matplotlib', 'scipy']
 )
