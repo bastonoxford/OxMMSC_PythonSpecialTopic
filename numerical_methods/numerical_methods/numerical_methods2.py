@@ -10,8 +10,6 @@ from scipy import sparse
 from scipy.sparse import linalg
 from math import pi, cos
 
-from scipy.sparse.sputils import matrix
-
 
 class ConvergenceError(Exception):
     """Exception raised if the solver fails to converge."""
@@ -132,7 +130,7 @@ def initialise1D(omega_domain, laplacian, epsilon, switch):
         w0 = 1/epsilon*(np.power(c0, 3) - c0) + epsilon*pi**2*c0
         return c0, w0
     elif switch == 1:
-        c0 = np.transpose(np.random.normal(0, 1, len(omega_domain)))
+        c0 = np.transpose(np.random.normal(0, 0.25, len(omega_domain)))
         w0 = 1/epsilon*(np.power(c0, 3) - c0) + epsilon*laplacian@c0
         return c0, w0
     else:
@@ -166,7 +164,7 @@ def initialise2D(omega_domain, laplacian, epsilon, switch):
         c_grid = np.cos(pi*xx)*np.cos(pi*yy)
         c0 = np.transpose(np.reshape(c_grid, c_grid.size))
     elif switch == 1:
-        c_grid = np.transpose(np.random.normal(0, 1, omega_domain.size))
+        c0 = np.transpose(np.random.normal(0, 1, xx.size))
     else:
         raise NotImplementedError(f"You must set the switch = 0 or 1,\
                                   not {switch}")
