@@ -1,7 +1,5 @@
 """This script illustrates the working of the numerical methods in 1D and 2D.
 
-Anthony Baston - Oxford - June -2021.
-
 --------------------------------------------------------------------------------
 
 Required variables (adjust as desired):

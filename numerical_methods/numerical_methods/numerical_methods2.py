@@ -1,8 +1,6 @@
 """
 A Class hierarchy defining six Numerical Methods for the Cahn-Hilliard PDE.
 
-Anthony Baston - Oxford - June 2021
-
 THIS SCRIPT IS VERSION 2 OF NUMERICAL METHODS AND USES SPARSE MATRICES.
 """
 import numpy as np
@@ -96,7 +94,7 @@ def laplacian2D(n, h):
 
     Returns
     ----------
-    M : sparse.dia_matrix
+    M : sparse.csr_matrix
         The discretised Laplacian operator, in sparse form.
     """
     m = laplacian1D(n, h)
@@ -189,7 +187,7 @@ class NumericalMethod:
             The timestep size of the method to be implemented.
         eps : float
             The PDE epsilon parameter
-        lap : np.array
+        lap : sparse.dia_matrix or sparse.csr_matrix
             The discretised laplacian operator
         """
         self.timestep = dt
@@ -202,6 +200,13 @@ class NumericalMethod:
         """General call method will intentionally not work \
            for this superclass."""
         raise NotImplementedError
+
+    def __eq__(self, other):
+        """Equality check for numerical methods."""
+        return isinstance(other, type(self))\
+               and self.timestep == other.timestep \
+               and self.epsilon == other.epsilon \
+               and self.laplacian.toarray().all() == other.laplacian.toarray().all() # noqa E501
 
 
 class Explicit(NumericalMethod):
@@ -220,7 +225,8 @@ class Explicit(NumericalMethod):
             The second order variable, as in the equation
         """
         c_next = c + self.timestep*self.laplacian@w
-        w_next = (1/self.epsilon)*(np.power(c_next, 3) - c_next) - self.epsilon*self.laplacian@c_next # noqa E501
+        w_next = (1/self.epsilon)*(np.power(c_next, 3) - c_next)\
+            - self.epsilon*self.laplacian@c_next
 
         return (c_next, w_next)
 
@@ -245,6 +251,11 @@ class Implicit(NumericalMethod):
         super().__init__(dt, eps, lap)
         self.tolerance = tolerance
         self.max_iter = max_iter
+
+    def __eq__(self, other):
+        return super().__eq__(self, other) \
+               and self.tolerance == other.tolerance \
+               and self.max_iter == other.max_iter
 
     def jacobian(self, c):
         """Jacobian associated with the Implicit scheme.
