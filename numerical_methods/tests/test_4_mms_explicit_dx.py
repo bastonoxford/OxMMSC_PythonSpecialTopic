@@ -1,11 +1,9 @@
 import numpy as np
 import scipy
 import matplotlib
-from matplotlib import cm
 import matplotlib.pyplot as plt
 from numerical_methods import Explicit, laplacian2D, initialise2D
-from math import inf, pi, ceil, exp, sqrt
-
+from math import inf, pi, ceil, exp
 
 T = 1*10**-6
 eps = 0.01
@@ -32,7 +30,8 @@ def test_space_convergence_exp():
         h = x_domain[1] - x_domain[0]
         omega = np.meshgrid(x_domain, y_domain)
         Lp = laplacian2D(n, h)
-        (c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp, epsilon=eps, switch=0) # noqa E501
+        (c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp,
+                                      epsilon=eps, switch=0)
         explicit = Explicit(dt, eps, Lp)
         c = c0
         w = w0 - 1/eps * (np.power(c0, 3) - c0)
@@ -48,13 +47,19 @@ def test_space_convergence_exp():
                 max_errors[k] = scipy.linalg.norm(actual_exp(c0, i*dt)-c, inf)
                 k += 1
 
-    error_ratio = [max_errors[j]/max_errors[j+1] for j in range(len(max_errors) - 1)]
+    error_ratio = np.array([max_errors[j]/max_errors[j+1]
+                            for j in range(len(max_errors) - 1)])
+    order_ratio = 1/2*error_ratio
+    assert error_ratio[0] > 3 and error_ratio[1] > 3 and error_ratio[2] > 3,\
+        "The convergence of the spatial discretisation of the Explicit scheme\
+         is not close enough to second order"
     plt.loglog([1/i for i in N_values], max_errors, marker="+")
     matplotlib.rcParams.update({"text.usetex": True})
     plt.xlabel("$\\Delta x$")
     plt.ylabel("$||C - \\widehat{c}||_\\infty$")
     plt.title("Convergence for $\\Delta x$ - Explicit Class.")
     plt.show()
+    return order_ratio
 
 
 test_space_convergence_exp()

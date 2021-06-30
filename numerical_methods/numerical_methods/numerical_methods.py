@@ -14,48 +14,6 @@ class ConvergenceError(Exception):
     pass
 
 
-def newton(f, df, c0, w0, tol, max_iter):
-    """Solve a multivariate non-linear eqaution using the Newton-Raphson iteration.
-
-    Solve f = 0 using the Newton-Raphson iteration.
-
-    Parameters
-    ----------
-    f    function(c0: np.array, c: np.array, w: np.array) -> np.array
-        The function whose root is being found
-    df : function(c: np.array) -> np.array
-        The Jacobian of f
-    c0 : np.array
-        The initial guess for c
-    w0 : np.array
-        The initial guess for w
-    tol : float
-        The solver tolerance, convergence is achieved when
-        max(abs(f(c0, c, w))) < 0
-    max_iter : int
-        The maximum number of acceptable iterations before the solver \
-        is determined to have failed.
-
-    Returns
-    ----------
-    tuple(np.array, np.array)
-        The approximate root computed using Newton iteration.
-    """
-    n = 0
-    c = c0
-    w = w0
-    while max(abs(f(c0, c, w))) > tol and n <= max_iter:
-        out = - linalg.spsolve(df(c), f(c0, c, w))
-        c = c + out[:c.size]
-        w = w + out[c.size:]
-        n += 1
-
-    if n <= max_iter and max(abs(f(c0, c, w))) <= tol:
-        return (c, w)
-    else:
-        raise ConvergenceError("Convergence Failure")
-
-
 def laplacian1D(n, h):
     """Construct a second order finite difference Laplacian operator,\
        associated with Neumann boundary conditions, in 1D.
@@ -208,6 +166,47 @@ class NumericalMethod:
                and self.epsilon == other.epsilon \
                and self.laplacian.toarray().all() == other.laplacian.toarray().all() # noqa E501
 
+    def newton(f, df, c0, w0, tol, max_iter):
+        """Solve a multivariate non-linear eqaution using the Newton-Raphson iteration.
+
+        Solve f = 0 using the Newton-Raphson iteration.
+
+        Parameters
+        ----------
+        f    function(c0: np.array, c: np.array, w: np.array) -> np.array
+            The function whose root is being found
+        df : function(c: np.array) -> np.array
+            The Jacobian of f
+        c0 : np.array
+            The initial guess for c
+        w0 : np.array
+            The initial guess for w
+        tol : float
+            The solver tolerance, convergence is achieved when
+            max(abs(f(c0, c, w))) < 0
+        max_iter : int
+            The maximum number of acceptable iterations before the solver \
+            is determined to have failed.
+
+        Returns
+        ----------
+        tuple(np.array, np.array)
+            The approximate root computed using Newton iteration.
+        """
+        n = 0
+        c = c0
+        w = w0
+        while max(abs(f(c0, c, w))) > tol and n <= max_iter:
+            out = - linalg.spsolve(df(c), f(c0, c, w))
+            c = c + out[:c.size]
+            w = w + out[c.size:]
+            n += 1
+
+        if n <= max_iter and max(abs(f(c0, c, w))) <= tol:
+            return (c, w)
+        else:
+            raise ConvergenceError("Convergence Failure")
+
 
 class Explicit(NumericalMethod):
     """Implementation of Euler's Explicit method for Cahn-Hilliard."""
@@ -316,7 +315,7 @@ class Implicit(NumericalMethod):
             The values of c and w at the next timestep.
         """
 
-        (c_next, w_next) = newton(self.implicit_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
+        (c_next, w_next) = super().newton(self.implicit_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
         return (c_next, w_next)
 
 
@@ -397,7 +396,7 @@ class ImexA(NumericalMethod):
         c_next, w_next : tuple(np.array, np.array)
             The values of c and w at the next timestep.
         """
-        (c_next, w_next) = newton(self.implicit_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
+        (c_next, w_next) = super().newton(self.implicit_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
         return (c_next, w_next)
 
 
@@ -406,7 +405,7 @@ class ImexB(NumericalMethod):
 
     name = "ImexB"
 
-    def __init__(self, dt, eps, lap):
+    def __init__(self, dt, eps, lap, *args, **kwargs):
         """Initialisation of ImexB method, call superclass __init__ and sets additional attributes. # noqa E501
 
         Additional Attributes

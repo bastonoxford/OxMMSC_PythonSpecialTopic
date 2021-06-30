@@ -3,16 +3,16 @@
 
 def test_numerical_import():
     "Ensure that we can import the numerical methods."
-    from numerical_methods.numerical_methods2 import NumericalMethod, Explicit, \
+    from numerical_methods.numerical_methods import NumericalMethod, Explicit, \
                                                     Implicit, ImexA, ImexB, \
                                                     ImexC, ImexD # noqa F401
 
 
 def test_additional_numerical_import():
     "Ensure we can also import the additional associated functions."
-    from numerical_methods.numerical_methods2 import newton, initialise1D, \
-                                                     initialise2D,laplacian1D,\
-                                                     laplacian2D, ConvergenceError # noqa F401
+    from numerical_methods.numerical_methods import initialise1D, \
+                                                    initialise2D,laplacian1D,\
+                                                    laplacian2D, ConvergenceError # noqa F401
 
 
 def test_get_quantities_import():

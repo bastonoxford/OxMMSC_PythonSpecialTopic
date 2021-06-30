@@ -1,7 +1,5 @@
 """This script is only meant to be used during development.
 
-Anthony Baston - Oxford - 2021
-
 TESTING SCRIPT VERSION 2 For sparse diagonals.
 """
 import numpy as np
@@ -9,7 +7,7 @@ import scipy
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import cm
-from numerical_methods2 import *
+from numerical_methods import *
 from math import pi, cos, ceil, sqrt, exp, sin, log
 from get_quantities import get_mass1D, get_mass2D, get_energy1D, get_energy2D
 
@@ -39,51 +37,47 @@ imexC = ImexC(dt, eps, Lp)
 imexD = ImexD(dt, eps, Lp)
 
 
-def Q(t):
-    qq = (4*eps*pi**4 - 1)*c0*exp(-t)
-    return qq
+T = 1*10**-5
+def make_benchmark():
+    dt = 1/256*h**4
+    J = ceil(T/dt)
+    explicit = Explicit(dt, eps, Lp)
+    c, w = c0, w0
+    c_evol = np.zeros((c0.size, J))
+    for k in range(1, J):
+        print(f"Percentage complete: {ceil(k/J*1000)/10}")
+        c, w = explicit(c, w)
+        c_evol[:, k] = c
+    return c_evol[:, -1]
 
 
-v1 = np.power((np.cos(pi*xx)*np.cos(pi*yy)), 3)
-v1 = np.transpose(np.reshape(v1, v1.size))
-
-v2 = np.cos(pi*xx) * np.power(np.sin(pi*xx), 2) * np.power(np.cos(pi*yy), 3)
-v2 = np.transpose(np.reshape(v2, v2.size))
-
-v3 = np.cos(pi*yy) * np.power(np.sin(pi*yy), 2) * np.power(np.cos(pi*xx), 3)
-v3 = np.transpose(np.reshape(v3, v3.size))
+benchmark = make_benchmark()
 
 
-def Q2(t):
-    qq2 = 2*pi**2*c0*exp(-t) - 6*pi**2*v1*exp(-3*t) + 6*pi**2*v2*exp(-3*t) + 6*pi**2*v3*exp(-3*t)
-    return Q(t) - 1/eps*qq2
+dt_s = [2**(-i)*h**4 for i in range(1, 4)]
+errors = np.zeros(len(dt_s))
+idx = 0
+for dt in dt_s:
+    J = ceil(T/dt)
+    implicit = Implicit(dt, eps, Lp, TOL, max_its)
+    c, w = c0, w0
+    for k in range(1, J):
+        print(f"Percentage complete: {ceil(k/J*1000)/10}")
+        c, w = implicit(c, w)
+    errors[idx] = np.linalg.norm(c - benchmark, 2)
+    idx += 1
 
 
-def actual(t):
-    return c0*exp(-t)
-
-
-c = c0
-w = w0 - 1/eps*(np.power(c, 3) - c)
-c_evol = np.zeros((c0.size, J))
-for k in range(1, J):
-    print(f"Percentage complete: {ceil(k/J*1000)/10}")
-    out = explicit(c, w)
-    c = out[0] + dt*Q(k*dt)
-    w = out[1] - 1/eps*(np.power(c, 3) - c)
-    c_evol[:, k] = c
-
-
-j_values = range(10)
-sz = c_evol[:, 0].shape
-xx, yy = omega
-for j in j_values:
-    j_ = ceil(J/10)*j
-    c_grid = np.reshape(c_evol[:, j_-1], (int(sqrt(sz[0])), int(sqrt(sz[0]))))
-    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-    ax.plot_surface(xx, yy, c_grid, cmap=cm.coolwarm,
-                    linewidth=0, antialiased=False)
-    plt.show()
+#j_values = range(10)
+#sz = c_evol[:, 0].shape
+#xx, yy = omega
+#for j in j_values:
+#    j_ = ceil(J/10)*j
+#    c_grid = np.reshape(c_evol[:, j_-1], (int(sqrt(sz[0])), int(sqrt(sz[0]))))
+#    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+#    ax.plot_surface(xx, yy, c_grid, cmap=cm.coolwarm,
+#                    linewidth=0, antialiased=False)
+#    plt.show()
 
 
 print("Determining solution mass across time.")

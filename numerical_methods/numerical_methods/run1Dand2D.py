@@ -54,7 +54,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import time
-from numerical_methods2 import laplacian1D, laplacian2D, Explicit, Implicit, \
+from numerical_methods import laplacian1D, laplacian2D, Explicit, Implicit, \
                                ImexA, ImexB, ImexC, ImexD, \
                                initialise1D, initialise2D
 from math import ceil, sqrt

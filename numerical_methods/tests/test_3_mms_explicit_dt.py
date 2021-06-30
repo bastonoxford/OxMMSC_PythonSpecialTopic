@@ -12,8 +12,6 @@ eps = 0.01
 x_domain = np.linspace(0, 1, N+1)
 y_domain = np.linspace(0, 1, N+1)
 h = x_domain[1] - x_domain[0]
-dt = h**4
-J = ceil(T/dt)
 TOL = 10**-8
 max_its = 1000
 omega = np.meshgrid(x_domain, y_domain)
@@ -38,7 +36,6 @@ def test_time_convergence_exp():
     dt_s = [2**(i - ll)*h**4 for i in range(0, ll)]
     k = 0
     for dt in dt_s:
-        T = 1*10**-5
         J = ceil(T/dt)
         explicit = Explicit(dt, eps, Lp)
         c = c0

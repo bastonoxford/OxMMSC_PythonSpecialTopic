@@ -100,7 +100,6 @@ def get_energy1D(c_evol, eps, h):
 
 
 def get_energy2D(c_evol, eps, h):
-    # ALMOST WORKING BUT NOT QUITE?
     """The free energy of the solution at a given time in 2D.
 
     Parameters
