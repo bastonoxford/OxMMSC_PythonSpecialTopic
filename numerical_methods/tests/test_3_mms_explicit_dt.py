@@ -55,15 +55,16 @@ def test_time_convergence_exp():
             if i == ceil(J/2):
                 max_errors[k] = scipy.linalg.norm(actual_exp(i*dt) - c, 2)
                 k += 1
-    assert [abs(max_errors[i]/max_errors[i+1] - 1/2) < 10**-15
-           for i in range(ll-1)], "Convergence is not linear as expected."
+    ls = [2*max_errors[i]/max_errors[i+1] for i in range(ll-1)]
+    for val in ls:
+        assert abs(val - 1) < 10**-2, "Convergence is not linear."
 
-    plt.loglog(dt_s, max_errors, marker="+")
-    matplotlib.rcParams.update({"text.usetex": True})
-    plt.xlabel("$\\Delta t$")
-    plt.ylabel("$||C - \\widehat{c}||_2$")
-    plt.title("Convergence for $\\Delta t$ - Explicit Class.")
-    plt.show()
+    # plt.loglog(dt_s, max_errors, marker="+")
+    # matplotlib.rcParams.update({"text.usetex": True})
+    # plt.xlabel("$\\Delta t$")
+    # plt.ylabel("$||C - \\widehat{c}||_2$")
+    # plt.title("Convergence for $\\Delta t$ - Explicit Class.")
+    # plt.show()
 
 
 test_time_convergence_exp()

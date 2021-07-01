@@ -102,10 +102,10 @@ def test_jacobians_imexA_implicit():
             to that of the implicit + [[0,0],[eye,0]]"
 
 
-test_laplacian_1D()
-test_laplacian_2D()
-test_initialise_1D()
-test_initialise_2D()
-test_newton_1D_implicit_smoothICs()
-test_newton_2D_imexA_randomICs()
-test_jacobians_imexA_implicit()
+# test_laplacian_1D()
+# test_laplacian_2D()
+# test_initialise_1D()
+# test_initialise_2D()
+# test_newton_1D_implicit_smoothICs()
+# test_newton_2D_imexA_randomICs()
+# test_jacobians_imexA_implicit()

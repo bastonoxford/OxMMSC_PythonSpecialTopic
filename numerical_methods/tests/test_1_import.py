@@ -1,4 +1,6 @@
 "Test imports."
+import sys
+print(sys.executable)
 
 
 def test_numerical_import():

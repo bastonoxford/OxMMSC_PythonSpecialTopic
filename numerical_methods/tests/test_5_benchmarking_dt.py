@@ -1,6 +1,6 @@
 """Benchmark Temporal testing methods vs the very fine Explicit Scheme."""
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from numerical_methods import Explicit, Implicit, ImexA, ImexB, ImexC,\
                               ImexD, laplacian2D, initialise2D
 from math import ceil
@@ -94,34 +94,30 @@ def test_imex_d_benchmark_dt():
     return imexD_errors
 
 
-def error_ratios(ls):
-    return [ls[i]/ls[i+1] for i in range(0, len(ls) - 1)]
+# def error_ratios(ls):
+#     return [ls[i]/ls[i+1] for i in range(0, len(ls) - 1)]
 
 
-implicit_errors = test_implicit_benchmark_dt()
-implicit_ratios = error_ratios(implicit_errors)
-
-imexA_errors = test_imex_a_benchmark_dt()
-imexA_ratios = error_ratios(imexA_errors)
-
-imexB_errors = test_imex_b_benchmark_dt()
-imexB_ratios = error_ratios(imexB_errors)
-
-imexC_errors = test_imex_c_benchmark_dt()
-imexC_ratios = error_ratios(imexC_errors)
-
-imexD_errors = test_imex_d_benchmark_dt()
-imexD_ratios = error_ratios(imexD_errors)
+# implicit_errors = test_implicit_benchmark_dt()
+# implicit_ratios = error_ratios(implicit_errors)
+# imexA_errors = test_imex_a_benchmark_dt() # noqa E265
+# imexA_ratios = error_ratios(imexA_errors) # noqa E265
+# imexB_errors = test_imex_b_benchmark_dt()
+# imexB_ratios = error_ratios(imexB_errors)
+# imexC_errors = test_imex_c_benchmark_dt() # noqa E265
+# imexC_ratios = error_ratios(imexC_errors)
+# imexD_errors = test_imex_d_benchmark_dt()
+# imexD_ratios = error_ratios(imexD_errors)
 
 
-plt.loglog(dt_s, implicit_errors, label="Implicit", marker="x")
-plt.loglog(dt_s, imexA_errors, label="ImexA", marker="x")
-plt.loglog(dt_s, imexB_errors, label="ImexB", marker="x")
-plt.loglog(dt_s, imexC_errors, label="ImexC", marker="x")
-plt.loglog(dt_s, imexD_errors, label="ImexD", marker="x")
+# plt.loglog(dt_s, implicit_errors, label="Implicit", marker="x")
+# plt.loglog(dt_s, imexA_errors, label="ImexA", marker="x")
+# plt.loglog(dt_s, imexB_errors, label="ImexB", marker="x")
+# plt.loglog(dt_s, imexC_errors, label="ImexC", marker="x")
+# plt.loglog(dt_s, imexD_errors, label="ImexD", marker="x")
 
-plt.xlabel("$\\Delta t$")
-plt.ylabel("$||C - C_{Exp}||_2$")
-plt.legend(loc="lower right")
-plt.title("Convergence of methods to the benchmarked solution.")
-plt.show()
+# plt.xlabel("$\\Delta t$")
+# plt.ylabel("$||C - C_{Exp}||_2$")
+# plt.legend(loc="lower right")
+# plt.title("Convergence of methods to the benchmarked solution.")
+# plt.show()

@@ -21,10 +21,6 @@ omega = np.meshgrid(x_domain, x_domain)
 xx, yy = omega
 h = x_domain[1] - x_domain[0]
 dt = h**4
-J = ceil(T/dt)
-Lp = laplacian2D(N, h)
-(c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp,
-                              epsilon=eps, switch=0)
 
 
 def coarsener(vec):
@@ -151,47 +147,47 @@ def test_imex_d_benchmark_dx():
     return imexD_errors, imexD_ratios
 
 
-implicit_errors, implicit_ratios = test_implicit_benchmark_dx()
-imexA_errors, imexA_ratios = test_imex_a_benchmark_dx()
-imexB_errors, imexB_ratios = test_imex_b_benchmark_dx()
-imexC_errors, imexC_ratios = test_imex_c_benchmark_dx()
-imexD_errors, imexD_ratios = test_imex_d_benchmark_dx()
+# implicit_errors, implicit_ratios = test_implicit_benchmark_dx()
+# imexA_errors, imexA_ratios = test_imex_a_benchmark_dx()
+# imexB_errors, imexB_ratios = test_imex_b_benchmark_dx()
+# imexC_errors, imexC_ratios = test_imex_c_benchmark_dx()
+# imexD_errors, imexD_ratios = test_imex_d_benchmark_dx()
 
-dx_s = [1/i for i in N_values]
+# dx_s = [1/i for i in N_values]
 
-plt.loglog(dx_s, implicit_errors, 'b', marker="x", label="Implicit")
-plt.xlabel("$\\Delta x$")
-plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{N}$")
-plt.legend(loc="lower right")
-plt.title("Convergence of methods to the benchmarked solution.")
-plt.show()
+# plt.loglog(dx_s, implicit_errors, 'b', marker="x", label="Implicit")
+# plt.xlabel("$\\Delta x$")
+# plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{C.size}$")
+# plt.legend(loc="lower right")
+# plt.title("Convergence of methods to the benchmarked solution.")
+# plt.show()
 
-plt.loglog(dx_s, imexA_errors, 'g', marker="x", label="ImexA")
-plt.xlabel("$\\Delta x$")
-plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{N}$")
-plt.legend(loc="lower right")
-plt.title("Convergence of methods to the benchmarked solution.")
-plt.show()
+# plt.loglog(dx_s, imexA_errors, 'g', marker="x", label="ImexA")
+# plt.xlabel("$\\Delta x$")
+# plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{C.size}$")
+# plt.legend(loc="lower right")
+# plt.title("Convergence of methods to the benchmarked solution.")
+# plt.show()
 
-plt.loglog(dx_s, imexB_errors, 'r', marker="x", label="ImexB")
-plt.xlabel("$\\Delta x$")
-plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{N}$")
-plt.legend(loc="lower right")
-plt.title("Convergence of methods to the benchmarked solution.")
-plt.show()
+# plt.loglog(dx_s, imexB_errors, 'r', marker="x", label="ImexB")
+# plt.xlabel("$\\Delta x$")
+# plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{C.size}$")
+# plt.legend(loc="lower right")
+# plt.title("Convergence of methods to the benchmarked solution.")
+# plt.show()
 
-plt.loglog(dx_s, imexC_errors, 'c', marker="x", label="ImexC")
-plt.xlabel("$\\Delta x$")
-plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{N}$")
-plt.legend(loc="lower right")
-plt.title("Convergence of methods to the benchmarked solution.")
-plt.show()
+# plt.loglog(dx_s, imexC_errors, 'c', marker="x", label="ImexC")
+# plt.xlabel("$\\Delta x$")
+# plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{C.size}$")
+# plt.legend(loc="lower right")
+# plt.title("Convergence of methods to the benchmarked solution.")
+# plt.show()
 
-plt.loglog(dx_s, imexD_errors, 'm', marker="x", label="ImexD")
-plt.xlabel("$\\Delta x$")
-plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{N}$")
-plt.legend(loc="lower right")
-plt.title("Convergence of methods to the benchmarked solution.")
-plt.show()
+# plt.loglog(dx_s, imexD_errors, 'm', marker="x", label="ImexD")
+# plt.xlabel("$\\Delta x$")
+# plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{C.size}$")
+# plt.legend(loc="lower right")
+# plt.title("Convergence of methods to the benchmarked solution.")
+# plt.show()
 
-print("Run complete.")
+# print("Run complete.")

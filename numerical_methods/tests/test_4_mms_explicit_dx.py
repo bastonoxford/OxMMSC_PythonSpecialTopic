@@ -6,7 +6,7 @@ import scipy
 import matplotlib
 import matplotlib.pyplot as plt
 from numerical_methods import Explicit, laplacian2D, initialise2D
-from math import inf, pi, ceil, exp
+from math import inf, pi, ceil, exp, sqrt
 
 T = 1*10**-6
 eps = 0.01
@@ -24,7 +24,7 @@ def actual_exp(c0, t):
 
 
 def test_space_convergence_exp():
-    N_values = [2, 4, 8, 16, 32, 64, 128]
+    N_values = [2, 4, 8, 16]  # , 32, 64, 128]
     max_errors = np.zeros(len(N_values))
     k = 0
     for n in N_values:
@@ -41,28 +41,32 @@ def test_space_convergence_exp():
         c_evol = np.zeros((c.size, J))
         c_evol[:, 0] = c0
         for i in range(1, J):
-            print(f"Percentage complete: {ceil(i/J*1000)/10}")
+            print(f"Percentage complete N = {n}: {ceil(i/J*1000)/10}")
             out = explicit(c, w)
             c = out[0] + dt*Q(c0, i*dt)
             w = out[1] - 1/eps*(np.power(c, 3) - c)
             c_evol[:, i] = c
             if i == ceil(J/2):
-                max_errors[k] = scipy.linalg.norm(actual_exp(c0, i*dt)-c, inf)
+                max_errors[k] = scipy.linalg.norm(
+                                (actual_exp(c0, i*dt)-c), 2)/sqrt(c.size)
                 k += 1
 
     error_ratio = np.array([max_errors[j]/max_errors[j+1]
                             for j in range(len(max_errors) - 1)])
     order_ratio = 1/2*error_ratio
-    assert error_ratio[0] > 3 and error_ratio[1] > 3 and error_ratio[2] > 3,\
-        "The convergence of the spatial discretisation of the Explicit scheme\
-         is not close enough to second order"
+    assert abs(order_ratio[0] - 2) < 0.15\
+           and abs(order_ratio[1] - 2) < 0.15\
+           and abs(order_ratio[2] - 2) < 0.15,\
+           "The convergence of the spatial discretisation of the Explicit scheme\
+           is not close enough to second order"
     plt.loglog([1/i for i in N_values], max_errors, marker="+")
     matplotlib.rcParams.update({"text.usetex": True})
     plt.xlabel("$\\Delta x$")
-    plt.ylabel("$||C - \\widehat{c}||_\\infty$")
+    plt.ylabel("$||C - \\widehat{c}||_2/\\sqrt{C.size}$")
     plt.title("Convergence for $\\Delta x$ - Explicit Class.")
     plt.show()
     return order_ratio
 
 
 test_space_convergence_exp()
+print("Pause")
