@@ -18,7 +18,7 @@ h = x_domain[1] - x_domain[0]
 
 
 def test_laplacian_1D():
-    "Test the 1D Laplacian constructor."
+    "Test the Neumann conditions in the 1D Laplacian constructor."
     Lap = laplacian1D(N, h).toarray()
     assert Lap[0, 0] == -Lap[0, 1] and Lap[-1, -1] == -Lap[-1, -2], \
            "Neumann Boundary conditions not implemented in Laplacian operator."

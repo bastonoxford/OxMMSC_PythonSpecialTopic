@@ -1,4 +1,4 @@
-"Import tests."
+"Test imports."
 
 
 def test_numerical_import():
