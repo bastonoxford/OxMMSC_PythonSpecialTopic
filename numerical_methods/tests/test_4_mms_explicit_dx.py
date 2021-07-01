@@ -1,3 +1,6 @@
+"""Test Spatial Convergence of Explicit Class for the
+    simplified operator via Method of Manufactured Solutions."""
+
 import numpy as np
 import scipy
 import matplotlib

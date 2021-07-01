@@ -1,3 +1,5 @@
+"""Test ancillary functions."""
+
 from numerical_methods import laplacian1D, laplacian2D, \
                               initialise1D, initialise2D, Implicit,\
                               ImexA
@@ -84,16 +86,20 @@ def test_newton_2D_imexA_randomICs():
 
 
 def test_jacobians_imexA_implicit():
+    "Test the difference of the Implicit.jacobian and ImexA.jacobian."
     Lp = laplacian2D(N, h)
     imexA = ImexA(dt, eps, Lp, tolerance=tol, max_iter=max_its)
     implicit = Implicit(dt, eps, Lp, tolerance=tol, max_iter=max_its)
     data = initialise2D(omega, Lp, eps, switch=0)
     implicit_J = implicit.jacobian(data[0])
     imexA_J = imexA.jacobian(data[0])
-    diff = imexA_J + 1//eps*sparse.bmat([[0*sparse.identity(data[0].size), 0*sparse.identity(data[0].size)], # noqa E501
-                                         [sparse.identity(data[0].size), 0*sparse.identity(data[0].size)]]) # noqa E501
+    diff = imexA_J + 1//eps*sparse.bmat([[0*sparse.identity(data[0].size),
+                                          0*sparse.identity(data[0].size)],
+                                         [sparse.identity(data[0].size),
+                                          0*sparse.identity(data[0].size)]])
     assert diff.toarray().all() == implicit_J.toarray().all(), \
-           "The Jacobian matrices of the ImexA should be equal to that of the implicit + [[0,0],[eye,0]]" # noqa E501
+           "The Jacobian matrices of the ImexA should be equal\
+            to that of the implicit + [[0,0],[eye,0]]"
 
 
 test_laplacian_1D()

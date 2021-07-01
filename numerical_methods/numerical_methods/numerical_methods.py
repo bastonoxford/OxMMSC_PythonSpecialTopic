@@ -166,7 +166,7 @@ class NumericalMethod:
                and self.epsilon == other.epsilon \
                and self.laplacian.toarray().all() == other.laplacian.toarray().all() # noqa E501
 
-    def newton(f, df, c0, w0, tol, max_iter):
+    def newton(self, f, df, c0, w0, tol, max_iter):
         """Solve a multivariate non-linear eqaution using the Newton-Raphson iteration.
 
         Solve f = 0 using the Newton-Raphson iteration.

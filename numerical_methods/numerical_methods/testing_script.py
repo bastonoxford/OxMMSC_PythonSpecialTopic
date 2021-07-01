@@ -1,6 +1,5 @@
 """This script is only meant to be used during development.
 
-Anthony Baston - Oxford - 2021
 """
 import numpy as np
 import matplotlib.pyplot as plt

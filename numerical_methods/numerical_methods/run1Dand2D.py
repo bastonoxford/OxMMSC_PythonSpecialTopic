@@ -62,13 +62,13 @@ from get_quantities import get_mass1D, get_energy1D, \
                            get_mass2D, get_energy2D
 
 # Choose method and initial conditions.
-choice = 1
-initial = 1
+choice = 0
+initial = 0
 dimension = 2
 
 # Required variables - adjust as desired.
 T = 5*10**-4
-N = 75
+N = 50
 J_im = 1000
 eps = 0.01
 x_domain = np.linspace(0, 1, N+1)

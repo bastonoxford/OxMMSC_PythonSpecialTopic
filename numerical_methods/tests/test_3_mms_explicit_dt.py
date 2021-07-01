@@ -1,3 +1,6 @@
+"""Test Temporal Convergence of Explicit Class for the
+    simplified operator via Method of Manufactured Solutions."""
+
 import numpy as np
 import scipy
 import matplotlib
@@ -16,7 +19,8 @@ TOL = 10**-8
 max_its = 1000
 omega = np.meshgrid(x_domain, y_domain)
 Lp = laplacian2D(N, h)
-(c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp, epsilon=eps, switch=0) # noqa E501
+(c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp,
+                              epsilon=eps, switch=0)
 
 
 def Q(t):
