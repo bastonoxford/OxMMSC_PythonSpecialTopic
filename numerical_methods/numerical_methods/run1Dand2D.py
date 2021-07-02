@@ -83,12 +83,14 @@ dt_im = T/J_im
 # Set up Laplacian Operator and Initial Conditions based on Dimension selection
 if dimension == 1:
     Lp = laplacian1D(N, h)
-    (c0, w0, name) = initialise1D(omega_domain=x_domain, laplacian=Lp, epsilon=eps, switch=initial) # noqa E501
+    (c0, w0, name) = initialise1D(omega_domain=x_domain, laplacian=Lp,
+                                  epsilon=eps, switch=initial)
 
 elif dimension == 2:
     Lp = laplacian2D(N, h)
     omega = np.meshgrid(x_domain, y_domain)
-    (c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp, epsilon=eps, switch=initial) # noqa E501
+    (c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp,
+                                  epsilon=eps, switch=initial)
 
 else:
     raise NotImplementedError(f"Please select dimension to be an int \
@@ -118,7 +120,8 @@ else:
                                 of type {type(choice)}")
 
 # Solve the equation.
-print(f"Solving Cahn-Hilliard in {dimension}D, with the {method.name} scheme, and {name} initial conditions. About to start.") # noqa E501
+print(f"Solving Cahn-Hilliard in {dimension}D, with the {method.name} scheme" +
+      f" and {name} initial conditions. About to start.")
 time.sleep(5)
 
 c_evol = np.zeros((c0.size, J))
@@ -165,7 +168,8 @@ else:
     xx, yy = omega
     for j in j_values:
         j_ = ceil(J/10)*j
-        c_grid = np.reshape(c_evol[:, j_-1], (int(sqrt(sz[0])), int(sqrt(sz[0])))) # noqa E501
+        c_grid = np.reshape(c_evol[:, j_-1], (int(sqrt(sz[0])),
+                                              int(sqrt(sz[0]))))
         fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
         ax.plot_surface(xx, yy, c_grid, cmap=cm.coolwarm,
                         linewidth=0, antialiased=False)

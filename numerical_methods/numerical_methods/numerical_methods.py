@@ -16,7 +16,7 @@ class ConvergenceError(Exception):
 
 
 def laplacian1D(n, h):
-    """Construct a second order finite difference Laplacian operator,\
+    """Construct a second order finite difference Laplacian operator,
        associated with Neumann boundary conditions, in 1D.
 
     Parameters
@@ -41,7 +41,7 @@ def laplacian1D(n, h):
 
 
 def laplacian2D(n, h):
-    """Construct a second order finite difference Laplacian operator,\
+    """Construct a second order finite difference Laplacian operator,
     associated with Neumann boundary conditions, in 2D.
 
     Parameters
@@ -80,8 +80,12 @@ def initialise1D(omega_domain, laplacian, epsilon, switch):
 
     Returns
     ----------
-    tuple(np.array, np.array)
-        The c0 and w0 initial data respectively.
+    c0 : np.array
+        The c0 initial data.
+    w0 : np.array
+        The w0 initial data.
+    name : str
+        "smooth" or "random" stating the type of initial conditions.
     """
     if switch == 0:
         c0 = np.transpose(np.array([cos(pi*x) for x in omega_domain]))
@@ -116,8 +120,12 @@ def initialise2D(omega_domain, laplacian, epsilon, switch):
 
     Returns
     ----------
-    tuple(np.array, np.array)
-        The c0 and w0 initial data respectively.
+    c0 : np.array
+        The c0 initial data.
+    w0 : np.array
+        The w0 initial data.
+    name : str
+        "smooth" or "random" stating the type of initial conditions.
     """
     xx, yy = omega_domain
     if switch == 0:
@@ -163,9 +171,10 @@ class NumericalMethod:
     def __eq__(self, other):
         """Equality check for numerical methods."""
         return isinstance(other, type(self))\
-               and self.timestep == other.timestep \
-               and self.epsilon == other.epsilon \
-               and self.laplacian.toarray().all() == other.laplacian.toarray().all() # noqa E501
+            and self.timestep == other.timestep \
+            and self.epsilon == other.epsilon \
+            and self.laplacian.toarray().all() \
+            == other.laplacian.toarray().all()
 
     def newton(self, f, df, c0, w0, tol, max_iter):
         """Solve a multivariate non-linear eqaution using the Newton-Raphson iteration.
@@ -186,12 +195,12 @@ class NumericalMethod:
             The solver tolerance, convergence is achieved when
             max(abs(f(c0, c, w))) < 0
         max_iter : int
-            The maximum number of acceptable iterations before the solver \
+            The maximum number of acceptable iterations before the solver
             is determined to have failed.
 
         Returns
         ----------
-        tuple(np.array, np.array)
+        c, w : tuple(np.array, np.array)
             The approximate root computed using Newton iteration.
         """
         n = 0
@@ -237,7 +246,7 @@ class Implicit(NumericalMethod):
     name = "Implicit"
 
     def __init__(self, dt, eps, lap, tolerance, max_iter):
-        """Initialisation of Implicit method, call superclass __init__\
+        """Initialisation of Implicit method, call superclass __init__
            and sets additional attributes.
 
         Additional Parameters
@@ -245,7 +254,7 @@ class Implicit(NumericalMethod):
         tolerance : float
             The tolerance to be used in Newton-Raphson root finding.
         max_iter : int
-            The maximum number of iteration to be used in Newton-Raphson \
+            The maximum number of iteration to be used in Newton-Raphson
             root finding.
         """
         super().__init__(dt, eps, lap)
@@ -272,7 +281,8 @@ class Implicit(NumericalMethod):
         """
         eye = sparse.identity(c.size)
         jacobian = sparse.bmat([[eye, -self.timestep*self.laplacian],
-                                [1/self.epsilon*(-3*sparse.diags(np.power(c, 2)) + eye) + self.epsilon*self.laplacian, eye]]) # noqa E501
+                                [1/self.epsilon*(-3*sparse.diags(np.power(c, 2)) # noqa E501
+                                 + eye) + self.epsilon*self.laplacian, eye]])
         jacobian = sparse.csr_matrix(jacobian)
         return jacobian
 
@@ -282,13 +292,13 @@ class Implicit(NumericalMethod):
         Parameters
         ----------
         c : np.array
-            The value of c at the previous timestep that defines the current \
+            The value of c at the previous timestep that defines the current
             function, a constant at each iteration.
         c_next : np.array
-            The value of c at the next timestep, that we seek to solve for \
+            The value of c at the next timestep, that we seek to solve for
             using Newton iterations.
         w_next : np.array
-            The value of w at the next timestep, that we also seek to solve \
+            The value of w at the next timestep, that we also seek to solve
             for using Newton iterations.
 
         Returns
@@ -297,7 +307,8 @@ class Implicit(NumericalMethod):
             The output of the function.
         """
         vec_1 = c_next-c-self.timestep*self.laplacian@w_next
-        vec_2 = w_next - 1/self.epsilon*np.power(c_next, 3) + 1/self.epsilon*c_next + self.epsilon*self.laplacian@c_next # noqa E501
+        vec_2 = w_next - 1/self.epsilon*np.power(c_next, 3)\
+            + 1/self.epsilon*c_next + self.epsilon*self.laplacian@c_next
         return np.concatenate((vec_1, vec_2))
 
     def __call__(self, c, w):
@@ -316,7 +327,8 @@ class Implicit(NumericalMethod):
             The values of c and w at the next timestep.
         """
 
-        (c_next, w_next) = super().newton(self.residual_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
+        c_next, w_next = super().newton(self.residual_function, self.jacobian,
+                                        c, w, self.tolerance, self.max_iter)
         return (c_next, w_next)
 
 
@@ -326,14 +338,16 @@ class ImexA(NumericalMethod):
     name = "ImexA"
 
     def __init__(self, dt, eps, lap, tolerance, max_iter):
-        """Initialisation of ImexA method, call superclass __init__ and sets additional attributes. # noqa E501
+        """Initialisation of ImexA method, call superclass __init__
+        and sets additional attributes.
 
         Additional Parameters
         ----------
         tolerance : float
             The tolerance to be used in Newton-Raphson root finding.
         max_iter : int
-            The maximum number of iteration to be used in Newton-Raphson root finding. # noqa E501
+            The maximum number of iteration to be used in Newton-Raphson
+            root finding.
         """
         super().__init__(dt, eps, lap)
         self.tolerance = tolerance
@@ -354,7 +368,8 @@ class ImexA(NumericalMethod):
         """
         eye = sparse.identity(c.size)
         jacobian = sparse.bmat([[eye, -self.timestep*self.laplacian],
-                                [-3/self.epsilon*sparse.diags(np.power(c, 2))+self.epsilon*self.laplacian, eye]]) # noqa E501
+                                [- 3/self.epsilon*sparse.diags(np.power(c, 2))
+                                 + self.epsilon*self.laplacian, eye]])
         jacobian = sparse.csr_matrix(jacobian)
         return jacobian
 
@@ -364,13 +379,13 @@ class ImexA(NumericalMethod):
         Parameters
         ----------
         c : np.array
-            The value of c at the previous timestep that defines the current \
+            The value of c at the previous timestep that defines the current
             function, a constant at each iteration.
         c_next : np.array
-            The value of c at the next timestep, that we seek to solve for \
+            The value of c at the next timestep, that we seek to solve for
             using Newton iterations.
         w_next : np.array
-            The value of w at the next timestep, that we also seek to solve \
+            The value of w at the next timestep, that we also seek to solve
             for using Newton iterations.
 
         Returns
@@ -379,7 +394,8 @@ class ImexA(NumericalMethod):
             The output of the function.
         """
         vec_1 = c_next-c-self.timestep*self.laplacian@w_next
-        vec_2 = w_next - 1/self.epsilon*np.power(c_next, 3) + 1/self.epsilon*c + self.epsilon*self.laplacian@c_next # noqa E501
+        vec_2 = w_next - 1/self.epsilon*np.power(c_next, 3) + 1/self.epsilon*c\
+            + self.epsilon*self.laplacian@c_next
         return np.concatenate((vec_1, vec_2))
 
     def __call__(self, c, w):
@@ -397,7 +413,8 @@ class ImexA(NumericalMethod):
         c_next, w_next : tuple(np.array, np.array)
             The values of c and w at the next timestep.
         """
-        (c_next, w_next) = super().newton(self.residual_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
+        c_next, w_next = super().newton(self.residual_function, self.jacobian,
+                                        c, w, self.tolerance, self.max_iter)
         return (c_next, w_next)
 
 
@@ -407,20 +424,22 @@ class ImexB(NumericalMethod):
     name = "ImexB"
 
     def __init__(self, dt, eps, lap, *args, **kwargs):
-        """Initialisation of ImexB method, call superclass __init__ and sets additional attributes. # noqa E501
+        """Initialisation of ImexB method, call superclass __init__
+        and sets additional attributes.
 
         Additional Attributes
         ----------
         self.matrix : np.block
-            A constant matrix equivalent to the Jacobian of the method, to be used \
-            to solve the linear system of ImexB for the relevant values at the \
-            next timesteps.
+            A constant matrix equivalent to the Jacobian of the method,
+            to be used to solve the linear system of ImexB for the
+            relevant values at the next timesteps.
         """
         super().__init__(dt, eps, lap)
         sz = np.shape(self.laplacian)
         eye = sparse.identity(sz[0])
-        matrix = sparse.bmat([[eye, -self.timestep*self.laplacian], # noqa E501
-                              [self.epsilon*self.laplacian - 2/self.epsilon*eye, eye]]) # noqa E501
+        matrix = sparse.bmat([[eye, -self.timestep*self.laplacian],
+                              [self.epsilon*self.laplacian
+                               - 2/self.epsilon*eye, eye]])
         self.matrix = sparse.csr_matrix(matrix)
 
     def __call__(self, c, *args):
@@ -437,7 +456,8 @@ class ImexB(NumericalMethod):
             The values of c and w at the next timestep.
         """
 
-        vec = np.concatenate((c, 1/self.epsilon*np.power(c, 3) - 3/self.epsilon*c)) # noqa E501
+        vec = np.concatenate((c, 1/self.epsilon*np.power(c, 3)
+                              - 3/self.epsilon*c))
         out = linalg.spsolve(self.matrix, vec)
         c_next = out[:c.size]
         w_next = out[c.size:]
@@ -464,9 +484,10 @@ class ImexC(NumericalMethod):
         """
         vec = np.concatenate((c, -2/self.epsilon*np.power(c, 3)))
         eye = sparse.identity(c.size)
-        matrix = sparse.bmat([[eye, -self.timestep*self.laplacian], # noqa E501
-                              [self.epsilon*self.laplacian - 3/self.epsilon*sparse.diags(np.power(c, 2)) \
-                              + 1/self.epsilon*eye, eye]]) # noqa E501
+        matrix = sparse.bmat([[eye, -self.timestep*self.laplacian],
+                              [self.epsilon*self.laplacian
+                               - 3/self.epsilon*sparse.diags(np.power(c, 2))
+                               + 1/self.epsilon*eye, eye]])
         matrix = sparse.csr_matrix(matrix)
         out = linalg.spsolve(matrix, vec)
         c_next = out[:c.size]
@@ -495,9 +516,9 @@ class ImexD(NumericalMethod):
 
         vec = np.concatenate((c, -1/self.epsilon*c))
         eye = sparse.identity(c.size)
-        matrix = sparse.bmat([[eye, -self.timestep*self.laplacian], # noqa E501
-                             [-1/self.epsilon*sparse.diags(np.power(c,2)) \
-                             + self.epsilon*self.laplacian, eye]]) # noqa E501
+        matrix = sparse.bmat([[eye, -self.timestep*self.laplacian],
+                             [-1/self.epsilon*sparse.diags(np.power(c, 2))
+                             + self.epsilon*self.laplacian, eye]])
         matrix = sparse.csr_matrix(matrix)
         out = linalg.spsolve(matrix, vec)
         c_next = out[:c.size]
