@@ -176,7 +176,7 @@ class NumericalMethod:
             and self.laplacian.toarray().all() \
             == other.laplacian.toarray().all()
 
-    def newton(self, f, df, c0, w0, tol, max_iter):
+    def newton(self, f, df, c0, w0, tolerance, max_iter):
         """Solve a multivariate non-linear eqaution using the Newton-Raphson iteration.
 
         Solve f = 0 using the Newton-Raphson iteration.
@@ -191,7 +191,7 @@ class NumericalMethod:
             The initial guess for c
         w0 : np.array
             The initial guess for w
-        tol : float
+        tolerance : float
             The solver tolerance, convergence is achieved when
             max(abs(f(c0, c, w))) < 0
         max_iter : int
@@ -206,13 +206,13 @@ class NumericalMethod:
         n = 0
         c = c0
         w = w0
-        while max(abs(f(c0, c, w))) > tol and n <= max_iter:
+        while max(abs(f(c0, c, w))) > tolerance and n <= max_iter:
             out = - linalg.spsolve(df(c), f(c0, c, w))
             c = c + out[:c.size]
             w = w + out[c.size:]
             n += 1
 
-        if n <= max_iter and max(abs(f(c0, c, w))) <= tol:
+        if n <= max_iter and max(abs(f(c0, c, w))) <= tolerance:
             return (c, w)
         else:
             raise ConvergenceError("Convergence Failure")
