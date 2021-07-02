@@ -1,3 +1,9 @@
+"""
+Script defining functions that return mass, M[c],
+and energy, J[c], of the evolution of the mass fraction c
+in the Cahn-Hilliard equation.
+"""
+
 from math import sqrt
 import numpy as np
 
