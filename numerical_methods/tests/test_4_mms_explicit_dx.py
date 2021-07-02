@@ -3,10 +3,10 @@
 
 import numpy as np
 import scipy
-import matplotlib
-import matplotlib.pyplot as plt
+# import matplotlib
+# import matplotlib.pyplot as plt
 from numerical_methods import Explicit, laplacian2D, initialise2D
-from math import inf, pi, ceil, exp, sqrt
+from math import pi, ceil, exp, sqrt
 
 T = 1*10**-6
 eps = 0.01
@@ -59,14 +59,14 @@ def test_space_convergence_exp():
            and abs(order_ratio[2] - 2) < 0.15,\
            "The convergence of the spatial discretisation of the Explicit scheme\
            is not close enough to second order"
-    plt.loglog([1/i for i in N_values], max_errors, marker="+")
-    matplotlib.rcParams.update({"text.usetex": True})
-    plt.xlabel("$\\Delta x$")
-    plt.ylabel("$||C - \\widehat{c}||_2/\\sqrt{C.size}$")
-    plt.title("Convergence for $\\Delta x$ - Explicit Class.")
-    plt.show()
+    # plt.loglog([1/i for i in N_values], max_errors, marker="+")
+    # matplotlib.rcParams.update({"text.usetex": True})
+    # plt.xlabel("$\\Delta x$")
+    # plt.ylabel("$||C - \\widehat{c}||_2/\\sqrt{C.size}$")
+    # plt.title("Convergence for $\\Delta x$ - Explicit Class.")
+    # plt.show()
     return order_ratio
 
 
-test_space_convergence_exp()
-print("Pause")
+# test_space_convergence_exp()
+# print("Pause")

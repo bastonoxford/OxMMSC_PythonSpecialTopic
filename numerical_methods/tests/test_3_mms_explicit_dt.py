@@ -3,8 +3,8 @@
 
 import numpy as np
 import scipy
-import matplotlib
-import matplotlib.pyplot as plt
+# import matplotlib
+# import matplotlib.pyplot as plt
 from numerical_methods import Explicit, laplacian2D, initialise2D
 from math import pi, ceil, exp
 

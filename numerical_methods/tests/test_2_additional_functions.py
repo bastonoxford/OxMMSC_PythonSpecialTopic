@@ -2,7 +2,7 @@
 
 from numerical_methods import laplacian1D, laplacian2D, \
                               initialise1D, initialise2D, Implicit,\
-                              ImexA
+                              ImexA, NumericalMethod
 import scipy.sparse as sparse
 import numpy as np
 from math import cos, pi
@@ -102,6 +102,24 @@ def test_jacobians_imexA_implicit():
             to that of the implicit + [[0,0],[eye,0]]"
 
 
+def residual_for_newton(c0, x, y):
+    return np.concatenate((x, y))
+
+
+def jacobian_for_newton(x):
+    return sparse.csr_matrix(np.identity(x.size*2))
+
+
+def test_newton():
+    junk_method = NumericalMethod(1, 1, 1)
+    x0, y0 = np.array([[1]]), np.array([[1]])
+    out = junk_method.newton(residual_for_newton, jacobian_for_newton,
+                             x0, y0, tol, max_its)
+    assert out == (np.array([[float(0)]]), np.array([[float(0)]])),\
+        "Newton iteration do not converge for a simple linear 2D function.\
+        Immediate convergence for such a function is absolutely necessary!"
+
+
 # test_laplacian_1D()
 # test_laplacian_2D()
 # test_initialise_1D()
@@ -109,3 +127,4 @@ def test_jacobians_imexA_implicit():
 # test_newton_1D_implicit_smoothICs()
 # test_newton_2D_imexA_randomICs()
 # test_jacobians_imexA_implicit()
+# test_newton

@@ -3,11 +3,12 @@
 import numpy as np
 import scipy
 from scipy import sparse
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from numerical_methods import Explicit, Implicit, ImexA,\
                        ImexB, ImexC, ImexD,\
                        laplacian2D, initialise2D
 from math import ceil, sqrt
+import pytest
 
 # MAIN INPUTS
 T = 1*10**-6
@@ -71,12 +72,18 @@ def make_benchmark():
 benchmark = make_benchmark()
 
 
-N_values = [8, 16, 32]
+def error_ratios(ls):
+    return [ls[i]/ls[i+1] for i in range(0, len(ls) - 1)]
 
 
-def method_tester_dx(methodClass):
+@pytest.mark.parametrize(
+    "methodClass",
+    ((Implicit), (ImexA), (ImexB),
+     (ImexC), (ImexD)))
+def test_method_tester_dx(methodClass):
     """Instantiate method and test against benchmark solution at increasingly\
        finer levels of spatial discretisation"""
+    N_values = [8, 16, 32]
     errors = np.zeros(len(N_values))
     idx = 0
     for N in N_values:
@@ -87,64 +94,72 @@ def method_tester_dx(methodClass):
         J = ceil(T/dt)
         Lp = laplacian2D(N, h)
         method = methodClass(dt, eps, Lp, TOL, max_its)
-        (c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp, epsilon=eps, switch=0) # noqa E501
+        (c0, w0, name) = initialise2D(omega_domain=omega, laplacian=Lp,
+                                      epsilon=eps, switch=0)
         c, w = c0, w0
         for j in range(1, J):
             print(f"Percentage complete for {method.name}\
                   with N = {N}: {ceil(j/J*1000)/10}")
             c, w = method(c, w)
         errors[idx] = scipy.linalg.norm(c - benchmark[idx], 2)/sqrt(c.size)
+        ratios = error_ratios(errors)
         idx += 1
+    assert abs(ratios[0]/2 - 2) < 0.15 and abs(ratios[1]/2 - 2) < 0.15,\
+           f"Second order convergence is not being observed\
+           for the {methodClass.name} class"
     return errors
 
 
-def error_ratios(ls):
-    return [ls[i]/ls[i+1] for i in range(0, len(ls) - 1)]
+# Original code to produce plots # noqa E265
+# retained for completeness (and just in case)
+
+# def error_ratios(ls):
+#     return [ls[i]/ls[i+1] for i in range(0, len(ls) - 1)]
 
 
-def test_implicit_benchmark_dx():
-    implicit_errors = method_tester_dx(Implicit)
-    implicit_ratios = error_ratios(implicit_errors)
-    assert implicit_ratios[0]/2 > 2 and implicit_ratios[1]/2 > 2,\
-           "Second order convergence is not being observed\
-            for the Implicit class"
-    return implicit_errors, implicit_ratios
+# def test_implicit_benchmark_dx():
+#     implicit_errors = method_tester_dx(Implicit)
+#     implicit_ratios = error_ratios(implicit_errors)
+#     assert implicit_ratios[0]/2 > 2 and implicit_ratios[1]/2 > 2,\
+#            "Second order convergence is not being observed\
+#             for the Implicit class"
+#     return implicit_errors, implicit_ratios
 
 
-def test_imex_a_benchmark_dx():
-    imexA_errors = method_tester_dx(ImexA)
-    imexA_ratios = error_ratios(imexA_errors)
-    assert imexA_ratios[0]/2 > 2 and imexA_ratios[1]/2 > 2,\
-           "Second order convergence is not being observed\
-            for the ImexA class"
-    return imexA_errors, imexA_ratios
+# def test_imex_a_benchmark_dx():
+#     imexA_errors = method_tester_dx(ImexA)
+#     imexA_ratios = error_ratios(imexA_errors)
+#     assert imexA_ratios[0]/2 > 2 and imexA_ratios[1]/2 > 2,\
+#            "Second order convergence is not being observed\
+#             for the ImexA class"
+#     return imexA_errors, imexA_ratios
 
 
-def test_imex_b_benchmark_dx():
-    imexB_errors = method_tester_dx(ImexB)
-    imexB_ratios = error_ratios(imexB_errors)
-    assert imexB_ratios[0]/2 > 2 and imexB_ratios[1]/2 > 2,\
-           "Second order convergence is not being observed\
-            for the ImexB class"
-    return imexB_errors, imexB_ratios
+# def test_imex_b_benchmark_dx():
+#     imexB_errors = method_tester_dx(ImexB)
+#     imexB_ratios = error_ratios(imexB_errors)
+#     assert imexB_ratios[0]/2 > 2 and imexB_ratios[1]/2 > 2,\
+#            "Second order convergence is not being observed\
+#             for the ImexB class"
+#     return imexB_errors, imexB_ratios
 
 
-def test_imex_c_benchmark_dx():
-    imexC_errors = method_tester_dx(ImexC)
-    imexC_ratios = error_ratios(imexC_errors)
-    assert imexC_ratios[0]/2 > 2 and imexC_ratios[1]/2 > 2,\
-           "Second order convergence is not being observed\
-            for the ImexC class"
-    return imexC_errors, imexC_ratios
+# def test_imex_c_benchmark_dx():
+#     imexC_errors = method_tester_dx(ImexC)
+#     imexC_ratios = error_ratios(imexC_errors)
+#     assert imexC_ratios[0]/2 > 2 and imexC_ratios[1]/2 > 2,\
+#            "Second order convergence is not being observed\
+#             for the ImexC class"
+#     return imexC_errors, imexC_ratios
 
 
-def test_imex_d_benchmark_dx():
-    imexD_errors = method_tester_dx(ImexD)
-    imexD_ratios = error_ratios(imexD_errors)
-    assert imexD_ratios[0]/2 > 2 and imexD_ratios[1]/2 > 2,\
-           "Second order convergence is not being observed\
-            for the ImexD class"
-    return imexD_errors, imexD_ratios
+# def test_imex_d_benchmark_dx():
+#     imexD_errors = method_tester_dx(ImexD)
+#     imexD_ratios = error_ratios(imexD_errors)
+#     assert imexD_ratios[0]/2 > 2 and imexD_ratios[1]/2 > 2,\
+#            "Second order convergence is not being observed\
+#             for the ImexD class"
+#     return imexD_errors, imexD_ratios
 
 
 # implicit_errors, implicit_ratios = test_implicit_benchmark_dx()
@@ -188,6 +203,6 @@ def test_imex_d_benchmark_dx():
 # plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{C.size}$")
 # plt.legend(loc="lower right")
 # plt.title("Convergence of methods to the benchmarked solution.")
-# plt.show()
+# plt.show() # noqa E265
 
 # print("Run complete.")

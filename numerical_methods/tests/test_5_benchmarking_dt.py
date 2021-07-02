@@ -4,6 +4,7 @@ import numpy as np
 from numerical_methods import Explicit, Implicit, ImexA, ImexB, ImexC,\
                               ImexD, laplacian2D, initialise2D
 from math import ceil
+import pytest
 
 # MAIN INPUTS
 N = 50
@@ -42,7 +43,11 @@ benchmark = make_benchmark()
 dt_s = [2**(-i)*h**4 for i in range(1, 4)]
 
 
-def method_tester(methodClass):
+@pytest.mark.parametrize(
+    "methodClass",
+    ((Implicit), (ImexA), (ImexB),
+     (ImexC), (ImexD)))
+def test_method_tester_dt(methodClass):
     """Instantiate method and test against benchmark solution at increasingly\
        finer levels of temporal discretisation"""
     errors = np.zeros(len(dt_s))
@@ -64,34 +69,37 @@ def method_tester(methodClass):
     return errors
 
 
-def test_implicit_benchmark_dt():
-    """Test Implicit class time convergence against benchmark."""
-    implicit_errors = method_tester(Implicit)
-    return implicit_errors
+# Original code to produce plots # noqa E265
+# retained for completeness (and just in case)
+
+# def test_implicit_benchmark_dt():
+#     """Test Implicit class time convergence against benchmark."""
+#     implicit_errors = method_tester(Implicit)
+#     return implicit_errors
 
 
-def test_imex_a_benchmark_dt():
-    """Test ImexA class time convergence against benchmark."""
-    imexA_errors = method_tester(ImexA)
-    return imexA_errors
+# def test_imex_a_benchmark_dt():
+#     """Test ImexA class time convergence against benchmark."""
+#     imexA_errors = method_tester(ImexA)
+#     return imexA_errors
 
 
-def test_imex_b_benchmark_dt():
-    """Test ImexB class time convergence against benchmark."""
-    imexB_errors = method_tester(ImexB)
-    return imexB_errors
+# def test_imex_b_benchmark_dt():
+#     """Test ImexB class time convergence against benchmark."""
+#     imexB_errors = method_tester(ImexB)
+#     return imexB_errors
 
 
-def test_imex_c_benchmark_dt():
-    """Test ImexC class time convergence against benchmark."""
-    imexC_errors = method_tester(ImexC)
-    return imexC_errors
+# def test_imex_c_benchmark_dt():
+#     """Test ImexC class time convergence against benchmark."""
+#     imexC_errors = method_tester(ImexC)
+#     return imexC_errors
 
 
-def test_imex_d_benchmark_dt():
-    """Test ImexD class time convergence against benchmark."""
-    imexD_errors = method_tester(ImexD)
-    return imexD_errors
+# def test_imex_d_benchmark_dt():
+#     """Test ImexD class time convergence against benchmark."""
+#     imexD_errors = method_tester(ImexD)
+#     return imexD_errors
 
 
 # def error_ratios(ls):

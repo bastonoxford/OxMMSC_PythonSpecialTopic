@@ -275,7 +275,7 @@ class Implicit(NumericalMethod):
         jacobian = sparse.csr_matrix(jacobian)
         return jacobian
 
-    def implicit_function(self, c, c_next, w_next):
+    def residual_function(self, c, c_next, w_next):
         """Function associated with the implicit method.
 
         Parameters
@@ -315,7 +315,7 @@ class Implicit(NumericalMethod):
             The values of c and w at the next timestep.
         """
 
-        (c_next, w_next) = super().newton(self.implicit_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
+        (c_next, w_next) = super().newton(self.residual_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
         return (c_next, w_next)
 
 
@@ -357,7 +357,7 @@ class ImexA(NumericalMethod):
         jacobian = sparse.csr_matrix(jacobian)
         return jacobian
 
-    def implicit_function(self, c, c_next, w_next):
+    def residual_function(self, c, c_next, w_next):
         """Function associated with the ImexA method.
 
         Parameters
@@ -396,7 +396,7 @@ class ImexA(NumericalMethod):
         c_next, w_next : tuple(np.array, np.array)
             The values of c and w at the next timestep.
         """
-        (c_next, w_next) = super().newton(self.implicit_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
+        (c_next, w_next) = super().newton(self.residual_function, self.jacobian, c, w, self.tolerance, self.max_iter) # noqa E501
         return (c_next, w_next)
 
 
