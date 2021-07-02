@@ -1,7 +1,8 @@
 """
 A Class hierarchy defining six Numerical Methods for the Cahn-Hilliard PDE.
 
-THIS SCRIPT IS VERSION 2 OF NUMERICAL METHODS AND USES SPARSE MATRICES.
+This script also contains functions to produce initial conditions in 1D and 2D
+and functions that construct the finite difference Laplacian in 1D and 2D
 """
 import numpy as np
 from scipy import sparse

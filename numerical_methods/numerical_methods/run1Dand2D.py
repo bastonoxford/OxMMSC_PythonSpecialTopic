@@ -2,7 +2,7 @@
 
 --------------------------------------------------------------------------------
 
-Required variables (adjust as desired):
+Required variables (adjust as desired, with caution):
 ------------
 T : float           
     End time.
