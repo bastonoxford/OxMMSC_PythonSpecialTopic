@@ -113,12 +113,9 @@ def test_method_tester_dx(methodClass):
 # Original code to produce plots # noqa E265
 # retained for completeness (and just in case)
 
-# def error_ratios(ls):
-#     return [ls[i]/ls[i+1] for i in range(0, len(ls) - 1)]
-
 
 # def test_implicit_benchmark_dx():
-#     implicit_errors = method_tester_dx(Implicit)
+#     implicit_errors = test_method_tester_dx(Implicit)
 #     implicit_ratios = error_ratios(implicit_errors)
 #     assert implicit_ratios[0]/2 > 2 and implicit_ratios[1]/2 > 2,\
 #            "Second order convergence is not being observed\
@@ -127,7 +124,7 @@ def test_method_tester_dx(methodClass):
 
 
 # def test_imex_a_benchmark_dx():
-#     imexA_errors = method_tester_dx(ImexA)
+#     imexA_errors = test_method_tester_dx(ImexA)
 #     imexA_ratios = error_ratios(imexA_errors)
 #     assert imexA_ratios[0]/2 > 2 and imexA_ratios[1]/2 > 2,\
 #            "Second order convergence is not being observed\
@@ -136,7 +133,7 @@ def test_method_tester_dx(methodClass):
 
 
 # def test_imex_b_benchmark_dx():
-#     imexB_errors = method_tester_dx(ImexB)
+#     imexB_errors = test_method_tester_dx(ImexB)
 #     imexB_ratios = error_ratios(imexB_errors)
 #     assert imexB_ratios[0]/2 > 2 and imexB_ratios[1]/2 > 2,\
 #            "Second order convergence is not being observed\
@@ -145,7 +142,7 @@ def test_method_tester_dx(methodClass):
 
 
 # def test_imex_c_benchmark_dx():
-#     imexC_errors = method_tester_dx(ImexC)
+#     imexC_errors = test_method_tester_dx(ImexC)
 #     imexC_ratios = error_ratios(imexC_errors)
 #     assert imexC_ratios[0]/2 > 2 and imexC_ratios[1]/2 > 2,\
 #            "Second order convergence is not being observed\
@@ -154,7 +151,7 @@ def test_method_tester_dx(methodClass):
 
 
 # def test_imex_d_benchmark_dx():
-#     imexD_errors = method_tester_dx(ImexD)
+#     imexD_errors = test_method_tester_dx(ImexD)
 #     imexD_ratios = error_ratios(imexD_errors)
 #     assert imexD_ratios[0]/2 > 2 and imexD_ratios[1]/2 > 2,\
 #            "Second order convergence is not being observed\
@@ -168,10 +165,10 @@ def test_method_tester_dx(methodClass):
 # imexC_errors, imexC_ratios = test_imex_c_benchmark_dx()
 # imexD_errors, imexD_ratios = test_imex_d_benchmark_dx()
 
-# dx_s = [1/i for i in N_values]
+# dx_s = [1/i for i in [8, 16, 32]] # noqa E265
 
-# plt.loglog(dx_s, implicit_errors, 'b', marker="x", label="Implicit")
-# plt.xlabel("$\\Delta x$")
+# plt.loglog(dx_s, implicit_errors, 'b', marker="x", label="Implicit") # noqa E265
+# plt.xlabel("$\\Delta x$") # noqa E265
 # plt.ylabel("$||C - C_{Exp}||_2/\\sqrt{C.size}$")
 # plt.legend(loc="lower right")
 # plt.title("Convergence of methods to the benchmarked solution.")

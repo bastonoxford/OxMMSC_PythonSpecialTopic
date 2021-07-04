@@ -144,7 +144,16 @@ def initialise2D(omega_domain, laplacian, epsilon, switch):
 
 
 class NumericalMethod:
-    """A general class of numerical method for the Cahn-Hilliard equation."""
+    """A general class of numerical method for the Cahn-Hilliard equation.
+
+    Attributes
+    ----------
+    dt : float
+        The timestep size of the method to be implemented.
+    eps : float
+        The PDE epsilon parameter
+    lap : sparse.dia_matrix or sparse.csr_matrix
+        The discretised laplacian operator"""
     def __init__(self, dt, eps, lap, *args, **kwargs):
         """Initialisation of general numerical method.
 
@@ -281,7 +290,7 @@ class Implicit(NumericalMethod):
         """
         eye = sparse.identity(c.size)
         jacobian = sparse.bmat([[eye, -self.timestep*self.laplacian],
-                                [1/self.epsilon*(-3*sparse.diags(np.power(c, 2)) # noqa E501
+                                [1/self.epsilon*(-3*sparse.diags(np.power(c, 2)) # noqa E501, 1 character over
                                  + eye) + self.epsilon*self.laplacian, eye]])
         jacobian = sparse.csr_matrix(jacobian)
         return jacobian

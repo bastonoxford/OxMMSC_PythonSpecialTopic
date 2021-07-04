@@ -70,7 +70,7 @@ dimension = 2
 T = 5*10**-4
 N = 50
 J_im = 1000
-eps = 0.01
+eps = 0.02
 x_domain = np.linspace(0, 1, N+1)
 y_domain = np.linspace(0, 1, N+1)
 h = x_domain[1] - x_domain[0]
@@ -106,6 +106,7 @@ methods = [Explicit(dt_ee, eps, Lp), Implicit(dt_im, eps, Lp, TOL, max_its),
 method = methods[choice]
 if choice == 0:
     J = J_ee
+    times = [j*dt_ee for j in range(0, J)]
     assert dt_ee < 8*h**4, f"For stability, please ensure that the \
                              timestep for the Explicit Euler method \
                              is < 8*h**4 you have entered a value that \
@@ -113,6 +114,7 @@ if choice == 0:
 
 elif type(choice) == int and 0 < choice <= 5:
     J = J_im
+    times = [j*dt_im for j in range(0, J)]
 
 else:
     raise NotImplementedError(f"Please choose a method by setting choice  \
@@ -122,7 +124,7 @@ else:
 # Solve the equation.
 print(f"Solving Cahn-Hilliard in {dimension}D, with the {method.name} scheme" +
       f" and {name} initial conditions. About to start.")
-time.sleep(5)
+time.sleep(2)
 
 c_evol = np.zeros((c0.size, J))
 w_evol = np.zeros((w0.size, J))
@@ -148,18 +150,24 @@ if dimension == 1:
         ax[j].plot(x_domain, c_evol[:, j*ceil(J/4)-1])
         ax[j].set_xlim([0, 1])
         ax[j].set_ylim([-1, 1])
+    plt.xlabel("x", fontsize=18)
+    plt.ylabel("C", fontsize=20)
     plt.show()
 
     # Get solution mass evolution over time.
     mass_out = get_mass1D(c_evol, h)
     plt.figure(6)
-    plt.plot(mass_out)
+    plt.plot(times, mass_out)
+    plt.xlabel("Time", fontsize=16)
+    plt.ylabel("Mass, M[c]", fontsize=18)
     plt.show()
 
     # Get solution energy evolution over time.
     energy_out = get_energy1D(c_evol, eps, h)
     plt.figure(7)
-    plt.plot(energy_out)
+    plt.plot(times, energy_out)
+    plt.xlabel("Time", fontsize=16)
+    plt.ylabel("Free Energy, J[c]", fontsize=18)
     plt.show()
 else:
     # Plot the evolution of the solution.
@@ -168,23 +176,30 @@ else:
     xx, yy = omega
     for j in j_values:
         j_ = ceil(J/10)*j
-        c_grid = np.reshape(c_evol[:, j_-1], (int(sqrt(sz[0])),
-                                              int(sqrt(sz[0]))))
+        c_grid = np.reshape(c_evol[:, j_], (int(sqrt(sz[0])),
+                                            int(sqrt(sz[0]))))
         fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
         ax.plot_surface(xx, yy, c_grid, cmap=cm.coolwarm,
                         linewidth=0, antialiased=False)
+        plt.xlabel("x-axis", fontsize=16)
+        plt.ylabel("y-axis", fontsize=16)
+        ax.set_zlabel("C", fontsize=20)
         plt.show()
 
     # Get solution mass evolution over time
     mass_out = get_mass2D(c_evol, h)
     plt.figure(11)
-    plt.plot(mass_out)
+    plt.plot(times, mass_out)
+    plt.xlabel("Time")
+    plt.ylabel("Mass M[c]")
     plt.show()
 
     # Get solution energy evolution over time
     energy_out = get_energy2D(c_evol, eps, h)
     plt.figure(12)
-    plt.plot(energy_out)
+    plt.plot(times, energy_out)
+    plt.xlabel("Time")
+    plt.ylabel("Free Energy J[c]")
     plt.show()
 
 print("Run complete")

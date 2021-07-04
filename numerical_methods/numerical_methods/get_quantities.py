@@ -100,7 +100,8 @@ def get_energy1D(c_evol, eps, h):
         for j in range(1, sz[0]-1):
             energy_value = energy_value \
                             + 2 * (1/eps * potential_phi(c_evol[j, i])) \
-                            + eps/2 * ((c_evol[j+1, i] - c_evol[j-1, i]) / (2*h)) ** 2 # noqa E501
+                            + eps/2 * ((c_evol[j+1, i]
+                                        - c_evol[j-1, i]) / (2*h)) ** 2
         energy[i] = energy_value * h/2
     return energy
 
@@ -134,12 +135,16 @@ def get_energy2D(c_evol, eps, h):
                                      + potential_phi(c_grid[-1, j])
                                      + potential_phi(c_grid[j, 0])
                                      + potential_phi(c_grid[j, -1]))
-        energy_value -= 1/eps * (potential_phi(c_grid[0, 0]) + potential_phi(c_grid[0, -1]) # noqa E501
-                         + potential_phi(c_grid[-1, 0]) + potential_phi(c_grid[-1, -1])) # noqa E501
+        energy_value -= 1/eps * (potential_phi(c_grid[0, 0])
+                                 + potential_phi(c_grid[0, -1])
+                                 + potential_phi(c_grid[-1, 0])
+                                 + potential_phi(c_grid[-1, -1]))
         for kk in range(1, square-1):
             for ll in range(1, square-1):
                 energy_value += 2 * (1/eps * potential_phi(c_grid[kk, ll])) \
-                                 + eps/2 * ((c_grid[kk+1, ll] - c_grid[kk-1, ll]) / (2*h)  # noqa E501
-                                            + (c_grid[kk, ll+1] - c_grid[kk, ll-1]) / (2*h)) ** 2 # noqa E501
+                                 + eps/2 * ((c_grid[kk+1, ll]
+                                             - c_grid[kk-1, ll]) / (2*h)
+                                            + (c_grid[kk, ll+1]
+                                               - c_grid[kk, ll-1]) / (2*h)) ** 2 # noqa E501, 1 character over
         energy[i] = h**2/4 * energy_value
     return energy
