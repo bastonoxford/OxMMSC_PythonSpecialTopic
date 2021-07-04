@@ -178,6 +178,7 @@ else:
         j_ = ceil(J/10)*j
         c_grid = np.reshape(c_evol[:, j_], (int(sqrt(sz[0])),
                                             int(sqrt(sz[0]))))
+        # plt.imshow(c_grid)
         fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
         ax.plot_surface(xx, yy, c_grid, cmap=cm.coolwarm,
                         linewidth=0, antialiased=False)
